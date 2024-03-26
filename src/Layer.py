@@ -11,5 +11,5 @@ class Layer:
     def forward_propagation() -> np.ndarray: 
         raise NotImplemented
     
-    def backward_propagation() -> np.ndarray:
+    def gradient_descent() -> None:
         raise NotImplemented

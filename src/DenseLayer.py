@@ -20,3 +20,10 @@ class DenseLayer(Layer):
 
 
         return outputs
+    
+    def gradient_descent(self, cost, learnig_rate) -> None:
+
+        self.weights -= learnig_rate * np.dot(cost, np.sum(self.inputs.T, 0, keepdims= True)) 
+        self.bias -= learnig_rate * cost
+
+

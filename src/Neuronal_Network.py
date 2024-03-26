@@ -1,24 +1,30 @@
 import numpy as np
 
 class Neuronal_Network():
-    def __init__(self,  cost_funct) -> None:
+    def __init__(self,  cost_funct, metrics) -> None:
         self.cost_fuction = cost_funct
+        self.metrics = metrics
         self.layers = []
 
     def addLayer(self, layer):
         self.layers.append(layer)
 
-    def train(self, x_train, y_train, learning_rate = 0.1):
-        for i in range(1):
-            ## Execute the forward prop
+    def train(self, x_train, y_train, epochs = 50, learning_rate = 0.1):
+        for epoch in range(epochs):
+            ## Execute forward prop
             Y_hat = self.__forward_propagation(x_train).T
 
             ## Calculate the cost
             cost = self.cost_fuction[0](Y_hat, y_train)
-            print("The cost is {}".format(cost))
+            acc = self.metrics[0](Y_hat, y_train)
+            print("Epoch {}/{} -> loss: {} - acc: {}".format(epoch+1, epochs, cost, acc))
 
-            ## Excute the backward prop
-            grad = self.__backward_propagation(Y_hat, y_train)
+            ## Execute backward prop
+            error_matrix = self.__backward_propagation(Y_hat, y_train)
+
+            ## Execute gradient descent
+            self.__gradient_descent(error_matrix, learning_rate)
+            
 
 
 
@@ -45,16 +51,24 @@ class Neuronal_Network():
 
                 error = np.dot(layer.activation_function[1](Z), self.cost_fuction[1](Y_hat, Y))
 
-                grad.append(error)
+                grad.insert(0, error)
 
             else:
                 error = np.dot(np.dot(W_l.T, error), np.sum(layer.activation_function[1](Z).T, 0, keepdims = True))
                 error = np.sum(error, 1, keepdims=True)
 
                 W_l = layer.weights
-                grad.append(error)
+                grad.insert(0, error)
 
         return grad
+    
+    
+    def __gradient_descent(self, error, learning_rate):
+        for i, layer in enumerate(reversed(self.layers)):
+                error_num = len(error) - i - 1 ## This is to obtain the index grad corresponding to the current layer
+                
+                layer.gradient_descent(error[error_num], learning_rate)
+
             
         
 
