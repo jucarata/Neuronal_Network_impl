@@ -8,10 +8,15 @@ class DenseLayer(Layer):
         self.weights = np.random.rand(n_Outputs, n_Inputs) * 2 - 1
         self.bias =  np.random.rand(n_Outputs, 1)          * 2 - 1
         self.activation_function =  act_function # Activation Function has two params: the function and his derivate
+        
+        self.inputs = None
+        self.z = None
 
 
     def forward_prop(self, inputs) -> np.ndarray:
-        outputs = np.dot(self.weights, inputs) + self.bias
-        outputs = self.activation_function[0](outputs)
+        self.inputs = inputs
+        self.z = np.dot(self.weights, self.inputs) + self.bias
+        outputs = self.activation_function[0](self.z)
+
 
         return outputs
