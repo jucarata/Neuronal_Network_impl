@@ -9,15 +9,21 @@ class Neuronal_Network():
     def addLayer(self, layer):
         self.layers.append(layer)
 
-    def train(self, x_train, y_train, epochs = 50, learning_rate = 0.1):
+    def fit(self, x_train, y_train, epochs = 50, learning_rate = 0.1, validation_data = None):
         for epoch in range(epochs):
             ## Execute forward prop
             Y_hat = self.__forward_propagation(x_train).T
 
             ## Calculate the cost
-            cost = self.cost_fuction[0](Y_hat, y_train)
+            loss = self.cost_fuction[0](Y_hat, y_train)
             acc = self.metrics[0](Y_hat, y_train)
-            print("Epoch {}/{} -> loss: {} - acc: {}".format(epoch+1, epochs, cost, acc))
+
+            val_Y_hat = self.__forward_prop(validation_data[0]).T
+            val_loss = self.cost_fuction[0](val_Y_hat, validation_data[1])
+            val_acc = self.metrics[0](val_Y_hat, validation_data[1])
+
+            print("Epoch {}/{} -> loss: {} - acc: {} - val_loss: {} - val_acc: {}"
+                  .format(epoch+1, epochs, loss, acc, val_loss, val_acc))
 
             ## Execute backward prop
             error_matrix = self.__backward_propagation(Y_hat, y_train)
@@ -69,6 +75,17 @@ class Neuronal_Network():
                 
                 layer.gradient_descent(error[error_num], learning_rate)
 
+
+
+
+    def __forward_prop(self, X) -> np.ndarray:
+        output = X
+
+        for layer in self.layers:
+            output = layer.forward_propagation(output)
+            
+
+        return output
             
         
 

@@ -21,6 +21,13 @@ class DenseLayer(Layer):
 
         return outputs
     
+    def forward_propagation(self, inputs) -> np.ndarray:
+        Z = np.dot(self.weights, inputs) + self.bias
+        outputs = self.activation_function[0](Z)
+
+
+        return outputs
+    
     def gradient_descent(self, cost, learnig_rate) -> None:
 
         self.weights -= learnig_rate * np.dot(cost, np.sum(self.inputs.T, 0, keepdims= True)) 
