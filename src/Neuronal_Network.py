@@ -49,12 +49,13 @@ class Neuronal_Network():
         error = [()]
         W = [()]
 
+
         for layer in reversed(self.layers):
             Z = layer.z ## The weighted sum of the layer
 
             if(layer == self.layers[len(self.layers) - 1]):
                 W_l = layer.weights
-
+                
                 error = np.dot(layer.activation_function[1](Z), self.cost_fuction[1](Y_hat, Y))
 
                 grad.insert(0, error)
